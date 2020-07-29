@@ -1,46 +1,52 @@
 package com.company;
 
-import java.lang.Class;
-
 public class Main {
   public static void main(String[] args) {
-    Pair<String> test1 = new Pair<>("Hello", "world");
-    Pair<Integer> test2 = new Pair<>(123, 456);
-    // 无法取得带泛型的class，该式两边均为Pair.class
-    System.out.println(test1.getClass() == test2.getClass());
-    // 无法使用该式判断带泛型的类型（编译报错）
-    System.out.println(test2 instanceof Pair<String>);
-    // 正确实例化T类型的方式
-    try {
-      Pair<String> test3 = new Pair<>(String.class);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    Pair<Integer> test = new Pair<>(123, 456);
+    System.out.println(add(test));
+    set(test, 1, 2);
+    System.out.println(add(test));
+  }
+
+  // 可写不可读
+  public static void set(Pair<? super Integer> p, Integer first, Integer last) {
+    p.setFirst(first);
+    p.setLast(last);
+  }
+
+  // 可读不可写
+  public static int add(Pair<? extends Integer> p) {
+    return p.getFirst().intValue() + p.getLast().intValue();
   }
 }
 
 class Pair<T> {
-  private final T first;
-  private final T second;
+  private T first;
+  private T last;
 
-  public Pair(T first, T second) {
+  public Pair(T first, T last) {
     this.first = first;
-    this.second = second;
+    this.last = last;
   }
 
-  // 这是错误的实例化T的做法（因为擦拭法）
-  public Pair() {
-    this.first = new T();
-    this.second = new T();
+  public T getFirst() {
+    return this.first;
   }
 
-  // 如果需要实例化，需要显式传入Class<T>参数：
-  public Pair(Class<T> c) throws Exception {
-    first = c.getDeclaredConstructor().newInstance();
-    second = c.getDeclaredConstructor().newInstance();
+  public T getLast() {
+    return this.last;
   }
-}
 
-// 一个类可以继承自一个泛型类，例如：
-class IntPair extends Pair<Integer> {
+  public void setFirst(T first) {
+    this.first = first;
+  }
+
+  public void setLast(T last) {
+    this.last = last;
+  }
+
+  public void printPair() {
+    System.out.println(this.first);
+    System.out.println(this.last);
+  }
 }
