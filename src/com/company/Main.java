@@ -1,52 +1,33 @@
 package com.company;
 
+import java.util.Iterator;
+import java.util.List;
+
 public class Main {
   public static void main(String[] args) {
-    Pair<Integer> test = new Pair<>(123, 456);
-    System.out.println(add(test));
-    set(test, 1, 2);
-    System.out.println(add(test));
-  }
-
-  // 可写不可读
-  public static void set(Pair<? super Integer> p, Integer first, Integer last) {
-    p.setFirst(first);
-    p.setLast(last);
-  }
-
-  // 可读不可写
-  public static int add(Pair<? extends Integer> p) {
-    return p.getFirst().intValue() + p.getLast().intValue();
-  }
-}
-
-class Pair<T> {
-  private T first;
-  private T last;
-
-  public Pair(T first, T last) {
-    this.first = first;
-    this.last = last;
-  }
-
-  public T getFirst() {
-    return this.first;
-  }
-
-  public T getLast() {
-    return this.last;
-  }
-
-  public void setFirst(T first) {
-    this.first = first;
-  }
-
-  public void setLast(T last) {
-    this.last = last;
-  }
-
-  public void printPair() {
-    System.out.println(this.first);
-    System.out.println(this.last);
+    // 通过List.of方法构造的是不可变list
+    List<Integer> list = List.of(1, 2, 3, 4, 5);
+    // 不推荐的遍历方式
+    for (int i = 0; i < list.size(); i++) {
+      Integer s = list.get(i);
+      System.out.println(s);
+    }
+    // 使用迭代器的遍历方式
+    for (Iterator<Integer> it = list.iterator(); it.hasNext();) {
+      Integer s = it.next();
+      System.out.println(s);
+    }
+    // 简单的使用迭代器的遍历方式（推荐）
+    for (Integer s : list) {
+      System.out.println(s);
+    }
+    // -----------------------------------------
+    // list转array
+    // 1.丢失类型
+    Object[] array1 = list.toArray();
+    // 2.保留类型
+    Integer[] array2 = list.toArray(new Integer[list.size()]);
+    // 3.保留类型的简洁写法
+    Integer[] array3 = list.toArray(Integer[]::new);
   }
 }
