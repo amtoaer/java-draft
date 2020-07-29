@@ -1,33 +1,59 @@
 package com.company;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Main {
   public static void main(String[] args) {
-    List<Person> list = new ArrayList<>();
-    list.add(null);
-    list.add(new Person("XIAO", "MING", 18));
-    list.add(new Person("XIAO", "HONG", 15));
-    list.add(new Person("XIAO", "HUANG", 13));
-    System.out.println(list.indexOf(new Person("XIAO", "HONG", 15)));
+    List<Student> list = List.of(new Student("Bob", 78), new Student("Alice", 85), new Student("Brush", 66),
+        new Student("Newton", 99));
+    var holder = new Students(list);
+    System.out.println(holder.getScore("Bob") == 78 ? "测试成功!" : "测试失败!");
+    System.out.println(holder.getScore("Alice") == 85 ? "测试成功!" : "测试失败!");
+    System.out.println(holder.getScore("Tom") == -1 ? "测试成功!" : "测试失败!");
   }
 }
 
-class Person {
-  private final String firstName, lastName;
-  private final int age;
+class Students {
+  List<Student> list;
+  Map<String, Integer> cache;
 
-  public Person(String firstName, String lastName, int age) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.age = age;
+  Students(List<Student> list) {
+    this.list = list;
+    cache = new HashMap<>();
   }
 
-  @Override
-  public boolean equals(Object otherPerson) {
-    var other = (Person) otherPerson;
-    return (this == null || other == null) ? false
-        : firstName.equals(other.firstName) && lastName.equals(other.lastName) && age == other.age;
+  /**
+   * 根据name查找score，找到返回score，未找到返回-1
+   */
+  int getScore(String name) {
+    // 先在Map中查找:
+    Integer score = this.cache.get(name);
+    // 如果没有找到则写入缓存
+    if (score == null) {
+      score = findInList(name);
+      if (score != null) {
+        this.cache.put(name, score);
+      }
+    }
+    return score == null ? -1 : score.intValue();
+  }
+
+  Integer findInList(String name) {
+    for (var ss : this.list) {
+      if (ss.name.equals(name)) {
+        return ss.score;
+      }
+    }
+    return null;
+  }
+}
+
+class Student {
+  String name;
+  int score;
+
+  Student(String name, int score) {
+    this.name = name;
+    this.score = score;
   }
 }
