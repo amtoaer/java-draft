@@ -1,32 +1,33 @@
 package com.company;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 
 public class Main {
   public static void main(String[] args) {
-    final int start = 10;
-    final int end = 20;
-    List<Integer> list = new ArrayList<>();
-    for (int i = start; i <= end; i++) {
-      list.add(i);
-    }
-    Collections.shuffle(list);
-    // 随机删除List中的一个元素:
-    int removed = list.remove((int) (Math.random() * list.size()));
-    int found = findMissingNumber(start, end, list);
-    System.out.println(list.toString());
-    System.out.println("missing number: " + found);
-    System.out.println(removed == found ? "测试成功" : "测试失败");
+    List<Person> list = new ArrayList<>();
+    list.add(null);
+    list.add(new Person("XIAO", "MING", 18));
+    list.add(new Person("XIAO", "HONG", 15));
+    list.add(new Person("XIAO", "HUANG", 13));
+    System.out.println(list.indexOf(new Person("XIAO", "HONG", 15)));
+  }
+}
+
+class Person {
+  private final String firstName, lastName;
+  private final int age;
+
+  public Person(String firstName, String lastName, int age) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.age = age;
   }
 
-  static int findMissingNumber(int start, int end, List<Integer> list) {
-    for (int i = start; i <= end; i++) {
-      if (!list.contains(i)) {
-        return i;
-      }
-    }
-    return end;
+  @Override
+  public boolean equals(Object otherPerson) {
+    var other = (Person) otherPerson;
+    return (this == null || other == null) ? false
+        : firstName.equals(other.firstName) && lastName.equals(other.lastName) && age == other.age;
   }
 }
