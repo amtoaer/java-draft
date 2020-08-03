@@ -4,31 +4,24 @@ import java.util.*;
 
 public class Main {
   public static void main(String[] args) {
-    List<Message> received = List.of(new Message(1, "Hello!"), new Message(2, "发工资了吗？"), new Message(2, "发工资了吗？"),
-        new Message(3, "去哪吃饭？"), new Message(3, "去哪吃饭？"), new Message(4, "Bye"));
-    List<Message> displayMessages = process(received);
-    for (Message message : displayMessages) {
-      System.out.println(message.text);
+    String hex = toHex(12500);
+    if (hex.equalsIgnoreCase("30D4")) {
+      System.out.println("测试通过");
+    } else {
+      System.out.println("测试失败");
     }
   }
 
-  static List<Message> process(List<Message> received) {
-    Set<Message> set = new TreeSet<>(received);
-    return List.copyOf(set);
-  }
-}
-
-class Message implements Comparable<Message> {
-  public final int sequence;
-  public final String text;
-
-  public Message(int sequence, String text) {
-    this.sequence = sequence;
-    this.text = text;
-  }
-
-  @Override
-  public int compareTo(Message o) {
-    return this.sequence - o.sequence;
+  public static String toHex(int n) {
+    Deque<String> stack = new LinkedList<>();
+    while (n != 0) {
+      stack.push(Integer.toHexString(n % 16));
+      n = n / 16;
+    }
+    String result = "";
+    while (!stack.isEmpty()) {
+      result += stack.pop();
+    }
+    return result;
   }
 }
