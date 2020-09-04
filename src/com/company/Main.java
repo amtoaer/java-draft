@@ -1,36 +1,29 @@
 package com.company;
 
-import java.io.*;
-
 public class Main {
-  public static void main(String[] args) throws Exception {
-    File f;
-    if (args.length == 0) {
-      f = new File("./").getCanonicalFile();
-    } else if (args.length == 1) {
-      f = new File(args[0]).getCanonicalFile();
-    } else {
-      throw new Exception("len(args) must be 0 or 1");
+    public static void main(String[] args) throws Exception {
+        var add = new AddThread();
+        var dec = new DecThread();
+        add.start();
+        dec.start();
+        add.join();
+        dec.join();
+        System.out.println(Counter.count);
     }
-    if (f.exists()) {
-      if (f.isDirectory()) {
-        list(f, "");
-      } else {
-        throw new IOException("args[0] is not a directory");
-      }
-    } else {
-      throw new IOException("directory doesn't exist");
-    }
-  }
+}
 
-  public static void list(File file, String space) {
-    if (file.isDirectory()) {
-      System.out.println(space + file.getName() + File.separator);
-      for (var item : file.listFiles()) {
-        list(item, space + "  ");
-      }
-    } else if (file.isFile()) {
-      System.out.println(space + "  " + file.getName());
+class Counter {
+    public static int count = 0;
+}
+
+class AddThread extends Thread {
+    public void run() {
+        for (int i=0; i<10000; i++) { Counter.count += 1; }
     }
-  }
+}
+
+class DecThread extends Thread {
+    public void run() {
+        for (int i=0; i<10000; i++) { Counter.count -= 1; }
+    }
 }
