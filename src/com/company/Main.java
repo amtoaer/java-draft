@@ -2,37 +2,37 @@ package com.company;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        var c = new Counter();
-        var a = new Thread(() -> {
-            for (int i = 0; i < 100; i++) {
-                c.add(1);
+        var add = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                synchronized (Counter.lockA) {
+                    Counter.count += 1;
+                    synchronized (Counter.lockB) {
+                        Counter.count += 1;
+                    }
+                }
             }
         });
-        var b = new Thread(() -> {
-            for (int i = 0; i < 100; i++) {
-                c.dec(1);
+        var dec = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                synchronized (Counter.lockB) {
+                    Counter.count -= 1;
+                    synchronized (Counter.lockA) {
+                        Counter.count -= 1;
+                    }
+                }
             }
         });
-        a.start();
-        b.start();
-        a.join();
-        b.join();
-        System.out.println(c.get());
+        add.start();
+        dec.start();
+        add.join();
+        dec.join();
+        // excepted: 0
+        System.out.println(Counter.count);
     }
 }
 
 class Counter {
-    private int count = 0;
-
-    public synchronized void add(int n) {
-        count += n;
-    }
-
-    public synchronized void dec(int n) {
-        count -= n;
-    }
-
-    public int get() {
-        return count;
-    }
+    public static final Object lockA = new Object();
+    public static final Object lockB = new Object();
+    public static int count = 0;
 }
