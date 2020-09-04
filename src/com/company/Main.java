@@ -1,38 +1,38 @@
 package com.company;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
-        var add = new AddThread();
-        var dec = new DecThread();
-        add.start();
-        dec.start();
-        add.join();
-        dec.join();
-        System.out.println(Counter.count);
+    public static void main(String[] args) {
+        var c = new Counter();
+        new Thread(() -> {
+            for (int i = 0; i < 100; i++) {
+                c.add(1);
+            }
+        }).start();
+        new Thread(() -> {
+            for (int i = 0; i < 100; i++) {
+                c.dec(1);
+            }
+        }).start();
+        System.out.println(c.get());
     }
 }
 
 class Counter {
-    public static Object lock = new Object();
-    public static int count = 0;
-}
+    private int count = 0;
 
-class AddThread extends Thread {
-    public void run() {
-        synchronized (Counter.lock) {
-            for (int i = 0; i < 10000; i++) {
-                Counter.count += 1;
-            }
+    public void add(int n) {
+        synchronized (this) {
+            count += n;
         }
     }
-}
 
-class DecThread extends Thread {
-    public void run() {
-        synchronized (Counter.lock) {
-            for (int i = 0; i < 10000; i++) {
-                Counter.count -= 1;
-            }
+    public void dec(int n) {
+        synchronized (this) {
+            count -= n;
         }
+    }
+
+    public int get() {
+        return count;
     }
 }
