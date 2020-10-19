@@ -18,10 +18,12 @@ public class Main {
     private static int getEditDistance(String src, String tgt) {
         // dp[i][j]表示src和tgt在长度分别为i、j时需要的编辑距离
         int[][] dp = new int[src.length() + 1][tgt.length() + 1];
-        // src长度为0,tgt长度为x,编辑距离为x（为src插入x长度的字符串）
-        dp[0][tgt.length()] = tgt.length();
-        // tgt长度为0,src长度为x,编辑距离为x（为src删除x长度的字符串）
-        dp[src.length()][0] = src.length();
+        for (int i = 0; i < src.length(); i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 0; j < tgt.length() + 1; j++) {
+            dp[0][j] = j;
+        }
         for (int i = 0; i < src.length(); i++) {
             for (int j = 0; j < tgt.length(); j++) {
                 // 如果src[i]和tgt[j]相同，则不需要编辑，可以直接跳过
